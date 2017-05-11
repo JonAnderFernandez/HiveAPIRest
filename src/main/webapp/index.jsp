@@ -138,232 +138,231 @@
         </div>
         <!-- SCRIPTS -->
         <script type="text/javascript">
-            // variables
-            var request = new XMLHttpRequest();
-            var btn = document.getElementById('btn');
-            var data = document.getElementById('data');
-            var q = document.getElementById('q');
-            var columns = ['ip_start', 'ip_end', 'country', 'stateprov', 'district',
-                'city', 'zipcode', 'latitude', 'longitude', 'geoname_id', 'timezone_offset',
-                'timezone_type', 'isp_name', 'connection_type', 'organization_name'];
-            var queryType = '';
-            // al cargar la pagina se cargara el div de la query con el formato para select.
-            var s = '';
-            s += '<div>';
-            for (var i = 0; i < columns.length; i++) {
-                s += '<span><input type="checkbox" value=' + columns[i] + ' checked>' + columns[i] + '</span>';
-            }
-            s += '</div>'
-                    + '<div>'
-                    + '<label>FROM</label>'
-                    + '<input type="text" value="ip_geolocation_orc" disabled>'
-                    + '<label>WHERE</label>'
-                    + '<input type="text">'
-                    + '<label>LIMIT</label>'
-                    + '<input type="number" min="1" max="100" value="10">'
-                    + '</div>';
-            q.innerHTML = s;
-            // al pulsar el boton se creara el metodo y la ruta del request con
-            //    la funcion getRequest(), se abrira el request, se mostrara la
-            //    pantalla de cargando y se enviara la request
-            btn.onclick = function () {
-                data.innerHTML = '';
-                document.getElementById('spinner').innerHTML = '<i class="fa fa-cog fa-spin fa-3x fa-fw"></i>'
-                        + '<h3>CARGANDO DATOS ... </h3>';
-                document.getElementById('spinner').style.display = 'flex';
-                data.style.alignSelf = 'center';
-                data.style.overflowX = 'hidden';
-                data.style.width = '0';
-                var req = getRequest();
-                console.log('REQUEST = [' + req[0] + ']' + req[1]);
-                request.open(req[0], req[1]);
-                request.send();
-            };
-            // cuando la opcion del select se cambien se cargara el formato correspondiente
-            //    a la opcion de la query que se quiera realizar
-            document.querySelector('select').onchange = function () {
-                s = '';
-                switch (document.querySelector('select').value) {
-                    case 'SELECT':
-                        s += '<div>';
-                        for (var i = 0; i < columns.length; i++) {
-                            s += '<span><input type="checkbox" value=' + columns[i] + ' checked>' + columns[i] + '</span>';
-                        }
-                        s += '</div>'
-                                + '<div>'
-                                + '<label>FROM</label>'
-                                + '<input type="text" value="ip_geolocation_orc" disabled>'
-                                + '<label>WHERE</label>'
-                                + '<input type="text">'
-                                + '<label>LIMIT</label>'
-                                + '<input type="number" min="1" max="100" value="10">'
-                                + '</div>';
-                        q.className = 'select';
-                        break;
-                    case 'INSERT':
-                        s += '<div>'
-                                + '<label>INTO</label>'
-                                + '<input type="text" value="ip_geolocation_orc" disabled>'
-                                + '</div>'
-                                + '<div>';
-                        for (var i = 0; i < columns.length; i++) {
-                            s += '<span><input type="checkbox" value=' + columns[i] + '>' + columns[i] + '</span>';
-                        }
-                        s += '</div>'
-                                + '<div>'
-                                + '<label>VALUES</label>'
-                                + '<input type="text">'
-                                + '</div>';
-                        q.className = 'insert';
-                        break;
-                    case 'UPDATE':
-                        s += '<div>'
-                                + '<input type="text" value="ip_geolocation_orc" disabled>'
-                                + '<label>SET</label>'
-                                + '</div>'
-                                + '<div>'
-                                + '<select>';
-                        for (var i = 0; i < columns.length; i++) {
-                            s += '<option>' + columns[i] + '</option>';
-                        }
-                        s += '</select>'
-                                + '</div>'
-                                + '<div>'
-                                + '<label>=</label>'
-                                + '<input type="text">'
-                                + '<label>WHERE</label>'
-                                + '<input type="text">'
-                                + '</div>';
-                        q.className = 'update';
-                        break;
-                    case 'DELETE':
-                        s += '<div>'
-                                + '<label>FROM</label>'
-                                + '<input type="text" value="ip_geolocation_orc" disabled>'
-                                + '<label>WHERE</label>'
-                                + '<input type="text">'
-                                + '</div>';
-                        q.className = 'delete';
-                        break;
-                }
-                q.innerHTML = s;
-            };
-            // cuando se cambie el ready state es cargaran los datos en base al tipo
-            //    de query que se ha realizado
-            request.onreadystatechange = function () {
-                if (request.readyState === 4) {
-                    if (request.status === 200) {
-                        console.log(request.responseText);
-                        var ipGeo = JSON.parse(request.responseText);
-                        var datos = '';
-                        switch (queryType) {
-                            case 'SELECT':
-                                if (ipGeo.length !== 0) {
-                                    datos = '<table><tr>';
-                                    for (var key in ipGeo[0]) {
-                                        datos += '<th>' + key + '</th>';
-                                    }
-                                    datos += '</tr>';
-                                    for (var i = 0; i < ipGeo.length; i++) {
-                                        datos += '<tr>';
-                                        for (var key in ipGeo[i]) {
-                                            datos += '<td>' + ipGeo[i][key] + '</td>';
+            window.onload = function () {
+                // variables
+                var request = new XMLHttpRequest();
+                var btn = document.getElementById('btn');
+                var data = document.getElementById('data');
+                var q = document.getElementById('q');
+                var columns = ['ip_start', 'ip_end', 'country', 'stateprov', 'district',
+                    'city', 'zipcode', 'latitude', 'longitude', 'geoname_id', 'timezone_offset',
+                    'timezone_type', 'isp_name', 'connection_type', 'organization_name'];
+                var queryType = '';
+                // al cargar la pagina se cargara se llamara a la funcion loadQuery()
+                loadQuery();
+                // cuando la opcion del select se cambien se llamara a la funcion changeQuery()
+                document.querySelector('select').onchange = function () {
+                    loadQuery();
+                };
+                // al pulsar el boton se creara el metodo y la ruta del request con
+                //    la funcion getRequest(), se abrira el request, se mostrara la
+                //    pantalla de cargando y se enviara la request
+                btn.onclick = function () {
+                    data.innerHTML = '';
+                    document.getElementById('spinner').innerHTML = '<i class="fa fa-cog fa-spin fa-3x fa-fw"></i>'
+                            + '<h3>CARGANDO DATOS ... </h3>';
+                    document.getElementById('spinner').style.display = 'flex';
+                    data.style.alignSelf = 'center';
+                    data.style.overflowX = 'hidden';
+                    data.style.width = '0';
+                    var req = getRequest();
+                    console.log('REQUEST = [' + req[0] + ']' + req[1]);
+                    request.open(req[0], req[1]);
+                    request.send();
+                };
+                // cuando se cambie el ready state es cargaran los datos en base al tipo
+                //    de query que se ha realizado
+                request.onreadystatechange = function () {
+                    if (request.readyState === 4) {
+                        if (request.status === 200) {
+                            console.log(request.responseText);
+                            var ipGeo = JSON.parse(request.responseText);
+                            var datos = '';
+                            switch (queryType) {
+                                case 'SELECT':
+                                    if (ipGeo.length !== 0) {
+                                        datos = '<table><tr>';
+                                        for (var key in ipGeo[0]) {
+                                            datos += '<th>' + key + '</th>';
                                         }
                                         datos += '</tr>';
+                                        for (var i = 0; i < ipGeo.length; i++) {
+                                            datos += '<tr>';
+                                            for (var key in ipGeo[i]) {
+                                                datos += '<td>' + ipGeo[i][key] + '</td>';
+                                            }
+                                            datos += '</tr>';
+                                        }
+                                        datos += '</table>';
+                                        datos += '<h6 style="margin: 5px;border: 1px solid;padding: 5px;">NUMERO DE REGISTROS: ' + ipGeo.length + '</h6>';
+                                        data.style.overflowX = 'scroll';
+                                        data.style.alignSelf = 'flex-start';
+                                    } else {
+                                        datos = '<h3 style="color:red;">NO SE HA ENCONTRADO NINGUN REGISTRO</h3>'
+                                                + '<i style="color:red;" class="fa fa-exclamation-triangle" aria-hidden="true"></i>';
                                     }
-                                    datos += '</table>';
-                                    datos += '<h6 style="margin: 5px;border: 1px solid;padding: 5px;">NUMERO DE REGISTROS: ' + ipGeo.length + '</h6>';
-                                    data.style.overflowX = 'scroll';
-                                    data.style.alignSelf = 'flex-start';
-                                } else {
-                                    datos = '<h3 style="color:red;">NO SE HA ENCONTRADO NINGUN REGISTRO</h3>'
-                                            + '<i style="color:red;" class="fa fa-exclamation-triangle" aria-hidden="true"></i>';
-                                }
-                                break;
-                            case 'INSERT':
-                                datos = '<h3 style="color:green;">EL REGISTRO SE HA INTRODUCIDO CORRECTAMENTE</h3>'
-                                        + '<i style="color:green;" class="fa fa-plus-square-o" aria-hidden="true"></i>';
-                                break;
-                            case 'DELETE':
-                                datos = '<h3 style="color:green">EL REGISTRO SE HA ELIMINADO CORRECTAMENTE</h3>'
-                                        + '<i style="color:green;" class="fa fa-trash-o" aria-hidden="true"></i>';
-                                break;
-                            case 'UPDATE':
-                                datos = '<h3 style="color:green;">EL REGISTRO SE HA ACTUALIZADO CORRECTAMENTE</h3>'
-                                        + '<i style="color:green;" class="fa fa-pencil-square-o" aria-hidden="true"></i>';
-                                break;
+                                    break;
+                                case 'INSERT':
+                                    datos = '<h3 style="color:green;">EL REGISTRO SE HA INTRODUCIDO CORRECTAMENTE</h3>'
+                                            + '<i style="color:green;" class="fa fa-plus-square-o" aria-hidden="true"></i>';
+                                    break;
+                                case 'DELETE':
+                                    datos = '<h3 style="color:green">EL REGISTRO SE HA ELIMINADO CORRECTAMENTE</h3>'
+                                            + '<i style="color:green;" class="fa fa-trash-o" aria-hidden="true"></i>';
+                                    break;
+                                case 'UPDATE':
+                                    datos = '<h3 style="color:green;">EL REGISTRO SE HA ACTUALIZADO CORRECTAMENTE</h3>'
+                                            + '<i style="color:green;" class="fa fa-pencil-square-o" aria-hidden="true"></i>';
+                                    break;
+                            }
+                            data.innerHTML = datos;
+                        } else {
+                            data.innerHTML = '<h3 style="color:red;">HA OCURRIDO UN ERROR DURANTE LA PETICION</h3>'
+                                    + '<h4 style="text-align:center;">' + request.status + ' ' + request.statusText + '</h4>'
+                                    + '<i style="color:red;" class="fa fa-window-close-o" aria-hidden="true"></i>';
                         }
-                        data.innerHTML = datos;
-                    } else {
-                        data.innerHTML = '<h3 style="color:red;">HA OCURRIDO UN ERROR DURANTE LA PETICION</h3>'
-                                + '<h4 style="text-align:center;">' + request.status + ' ' + request.statusText + '</h4>'
-                                + '<i style="color:red;" class="fa fa-window-close-o" aria-hidden="true"></i>';
+                        data.style.width = '100%';
+                        document.getElementById('spinner').style.display = 'none';
                     }
-                    data.style.width = '100%';
-                    document.getElementById('spinner').style.display = 'none';
+                };
+                // funcion para cargar el formato correspondiente a la opcion de la query que se quiera realizar
+                function loadQuery() {
+                    s = '';
+                    switch (document.querySelector('select').value) {
+                        case 'SELECT':
+                            s += '<div>';
+                            for (var i = 0; i < columns.length; i++) {
+                                s += '<span><input type="checkbox" value=' + columns[i] + ' checked>' + columns[i] + '</span>';
+                            }
+                            s += '</div>'
+                                    + '<div>'
+                                    + '<label>FROM</label>'
+                                    + '<input type="text" value="ip_geolocation_orc" disabled>'
+                                    + '<label>WHERE</label>'
+                                    + '<input type="text">'
+                                    + '<label>ORDER BY</label>'
+                                    + '<select>';
+                            for (var i = 0; i < columns.length; i++) {
+                                s += '<option>' + columns[i] + '</option>';
+                            }
+                            s += '</select>'
+                                    + '<label>LIMIT</label>'
+                                    + '<input type="number" min="1" max="100" value="10">'
+                                    + '</div>';
+                            q.className = 'select';
+                            break;
+                        case 'INSERT':
+                            s += '<div>'
+                                    + '<label>INTO</label>'
+                                    + '<input type="text" value="ip_geolocation_orc" disabled>'
+                                    + '</div>'
+                                    + '<div>';
+                            for (var i = 0; i < columns.length; i++) {
+                                s += '<span><input type="checkbox" value=' + columns[i] + '>' + columns[i] + '</span>';
+                            }
+                            s += '</div>'
+                                    + '<div>'
+                                    + '<label>VALUES</label>'
+                                    + '<input type="text">'
+                                    + '</div>';
+                            q.className = 'insert';
+                            break;
+                        case 'UPDATE':
+                            s += '<div>'
+                                    + '<input type="text" value="ip_geolocation_orc" disabled>'
+                                    + '<label>SET</label>'
+                                    + '</div>'
+                                    + '<div>'
+                                    + '<select>';
+                            for (var i = 0; i < columns.length; i++) {
+                                s += '<option>' + columns[i] + '</option>';
+                            }
+                            s += '</select>'
+                                    + '</div>'
+                                    + '<div>'
+                                    + '<label>=</label>'
+                                    + '<input type="text">'
+                                    + '<label>WHERE</label>'
+                                    + '<input type="text">'
+                                    + '</div>';
+                            q.className = 'update';
+                            break;
+                        case 'DELETE':
+                            s += '<div>'
+                                    + '<label>FROM</label>'
+                                    + '<input type="text" value="ip_geolocation_orc" disabled>'
+                                    + '<label>WHERE</label>'
+                                    + '<input type="text">'
+                                    + '</div>';
+                            q.className = 'delete';
+                            break;
+                    }
+                    q.innerHTML = s;
+                }
+                // funcion para crear el metodo y la ruta para el request en base a la query
+                //    que se este realizando
+                function getRequest() {
+                    var path = '';
+                    var method = '';
+                    var query = '';
+                    queryType = document.querySelector('select').value;
+                    switch (queryType) {
+                        case 'SELECT':
+                            method = 'GET';
+                            path = 'ips/';
+                            query += document.querySelectorAll('select')[0].value + ' * '
+                                    + document.getElementsByTagName('label')[0].innerText + ' '
+                                    + document.querySelectorAll('input[type=text]')[0].value + ' ';
+                            if (document.querySelectorAll('input[type=text]')[1].value !== '') {
+                                query += document.getElementsByTagName('label')[1].innerText + ' '
+                                        + document.querySelectorAll('input[type=text]')[1].value + ' ';
+                            }
+                            query += document.getElementsByTagName('label')[2].innerText + ' '
+                                    + document.querySelectorAll('select')[1].value + ' '
+                                    + document.getElementsByTagName('label')[3].innerText + ' '
+                                    + document.querySelector('input[type=number]').value;
+                            break;
+                        case 'INSERT':
+                            method = 'POST';
+                            path = 'ips/';
+                            query += document.querySelector('select').value + ' '
+                                    + document.getElementsByTagName('label')[0].innerText + ' '
+                                    + document.querySelectorAll('input[type=text]')[0].value + '(';
+                            var chk = document.querySelectorAll('input:checked');
+                            var chks = '';
+                            for (var i = 0; i < chk.length; i++) {
+                                chks += chk[i].value + ',';
+                            }
+                            query += chks.slice(0, -1) + ') ' + document.getElementsByTagName('label')[1].innerText
+                                    + '(' + document.querySelectorAll('input[type=text]')[1].value + ')';
+                            break;
+                        case 'UPDATE':
+                            method = 'PUT';
+                            path = 'ips/';
+                            query += document.querySelectorAll('select')[0].value + ' '
+                                    + document.querySelectorAll('input[type=text]')[0].value + ' '
+                                    + document.getElementsByTagName('label')[0].innerText + ' '
+                                    + document.querySelectorAll('select')[1].value + ' '
+                                    + document.getElementsByTagName('label')[1].innerText + ' '
+                                    + document.querySelectorAll('input[type=text]')[1].value + ' '
+                                    + document.getElementsByTagName('label')[2].innerText + ' '
+                                    + document.querySelectorAll('input[type=text]')[2].value;
+                            break;
+                        case 'DELETE':
+                            method = 'DELETE';
+                            path = 'ips/';
+                            query += document.querySelector('select').value + ' '
+                                    + document.getElementsByTagName('label')[0].innerText + ' '
+                                    + document.querySelectorAll('input[type=text]')[0].value + ' '
+                                    + document.getElementsByTagName('label')[1].innerText + ' '
+                                    + document.querySelectorAll('input[type=text]')[1].value;
+                            break;
+                    }
+                    var url = 'http://localhost:8080/' + path + query;
+                    var req = [method, url];
+                    return req;
                 }
             };
-            // funcion para crear el metodo y la ruta para el request en base a la query
-            //    que se este realizando
-            function getRequest() {
-                var path = '';
-                var method = '';
-                var query = '';
-                queryType = document.querySelector('select').value;
-                switch (queryType) {
-                    case 'SELECT':
-                        method = 'GET';
-                        path = 'ips/';
-                        query += document.querySelector('select').value + ' * '
-                                + document.getElementsByTagName('label')[0].innerText + ' '
-                                + document.querySelectorAll('input[type=text]')[0].value + ' ';
-                        if (document.querySelectorAll('input[type=text]')[1].value !== '') {
-                            query += document.getElementsByTagName('label')[1].innerText + ' '
-                                    + document.querySelectorAll('input[type=text]')[1].value + ' ';
-                        }
-                        query += document.getElementsByTagName('label')[2].innerText + ' '
-                                + document.querySelector('input[type=number]').value;
-                        break;
-                    case 'INSERT':
-                        method = 'POST';
-                        path = 'ips/';
-                        query += document.querySelector('select').value + ' '
-                                + document.getElementsByTagName('label')[0].innerText + ' '
-                                + document.querySelectorAll('input[type=text]')[0].value + '(';
-                        var chk = document.querySelectorAll('input:checked');
-                        var chks = '';
-                        for (var i = 0; i < chk.length; i++) {
-                            chks += chk[i].value + ',';
-                        }
-                        query += chks.slice(0, -1) + ') ' + document.getElementsByTagName('label')[1].innerText
-                                + '(' + document.querySelectorAll('input[type=text]')[1].value + ')';
-                        break;
-                    case 'UPDATE':
-                        method = 'PUT';
-                        path = 'ips/';
-                        query += document.querySelectorAll('select')[0].value + ' '
-                                + document.querySelectorAll('input[type=text]')[0].value + ' '
-                                + document.getElementsByTagName('label')[0].innerText + ' '
-                                + document.querySelectorAll('select')[1].value + ' '
-                                + document.getElementsByTagName('label')[1].innerText + ' '
-                                + document.querySelectorAll('input[type=text]')[1].value + ' '
-                                + document.getElementsByTagName('label')[2].innerText + ' '
-                                + document.querySelectorAll('input[type=text]')[2].value;
-                        break;
-                    case 'DELETE':
-                        method = 'DELETE';
-                        path = 'ips/';
-                        query += document.querySelector('select').value + ' '
-                                + document.getElementsByTagName('label')[0].innerText + ' '
-                                + document.querySelectorAll('input[type=text]')[0].value + ' '
-                                + document.getElementsByTagName('label')[1].innerText + ' '
-                                + document.querySelectorAll('input[type=text]')[1].value;
-                        break;
-                }
-                var url = 'http://localhost:8080/' + path + query;
-                var req = [method, url];
-                return req;
-            }
         </script>
     </body>
 </html>
