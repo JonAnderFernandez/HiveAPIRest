@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html>
+    <!-- FAVICON -->
+    <link rel="icon" href="https://cdn4.iconfinder.com/data/icons/single-width-stroke/24/oui-icons-40-128.png" type="image/x-icon" />
     <title>Hive Queries</title>
     <!-- VIEWPORT -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- GOOGLE FONTS -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <!-- FONT AWESOME -->
     <link rel="stylesheet" 
           href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" 
@@ -12,7 +16,7 @@
     <style type="text/css">
         html, body{
             background: #EEE;            
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: 'Open Sans', sans-serif;
         }
         button{
             background: transparent;
@@ -22,14 +26,24 @@
             cursor: pointer;
             width: 100px;
         }
+        button, input, select{            
+            font-family: 'Open Sans', sans-serif;
+        }
         button:hover{
             font-weight: bolder;
-        }
+        }        
         label{
             margin: 0 5px;
         }
+        table{
+            width: 100%;
+        }
+        td{
+            color: #222;
+        }
         td,th{
             font-size: 10px;
+            padding: 3px;
         }
         tr:hover{
             cursor: pointer;            
@@ -52,68 +66,56 @@
             font-size: 10px;
         }
         body > div:nth-child(1) > div div input:disabled{ 
+            text-align: center;
             width: 120px;
         }
         body > div:nth-child(1) > div .select div:first-child, body > div:nth-child(1) > div .insert div:nth-child(2){ 
             border: 1px solid lightgray;
             display: flex;
             flex-direction: column;
-            padding: 3px;
-            padding-bottom: 5px;
+            padding: 0 10px 5px 0;
         }
         body > div:nth-child(1) > div select{ 
             background: white;
             height: 21px;
+        }
+        body > div:nth-child(1) > div select:first-child, body > div:nth-child(1) > div .insert div:first-child input{ 
             margin-right: 5px;
         }
-        body > div:nth-child(1) > div .insert div:first-child label{ 
+        body > div:nth-child(1) > div .insert div:first-child label, body > div:nth-child(1) > div .delete div label:first-child{ 
             margin-left: 0;
-        }
-        body > div:nth-child(1) > div .insert div:first-child input{ 
-            margin-right: 5px;
         }
         body > div:nth-child(1) > div .update select{ 
             margin-right: 0;
         }
-        body > div:nth-child(1) > div .delete div label:first-child{ 
-            margin-left: 0;
-        }
-        body > div:nth-child(2){
-            align-items: center;
-            display: flex;
-            justify-content: center;
-            min-height: 300px;
-        }
-        body > div:nth-child(2) > div:first-child{            
+        body > div:nth-child(2) > div{
             align-items: center;      
             display: flex;
-            height: 300px;
-            justify-content: center;            
-            width: 100%;
+            flex-wrap: wrap;
+            justify-content: center;
+            min-height: 300px;
+            overflow-x: auto;
         }
-        body > div:nth-child(1), body > div:nth-child(2){   
+        body > div:nth-child(2) > div i{            
+            margin-right: 10px;
+        }
+        body > div:nth-child(2) > div h6{    
+            align-self: flex-end;
+            border: 1px solid #222;
+            color: #222;
+            margin: 2px;
+            padding: 5px;
+            width: 98%;
+        }
+        body > div:nth-child(1), body > div:nth-child(2) > div{   
             border: 1px solid gray;
             background: white;
         }
-        body > div:nth-child(2) > div:first-child, button:hover, th, tr:hover{
+        body > div:nth-child(2) > div, button:hover, th, tr:hover{
             background: cornflowerblue;
         }
-        body > div:nth-child(2) > div:first-child, button:hover, th, tr:hover td{            
+        body > div:nth-child(2) > div, button:hover, th, tr:hover td{            
             color: white;
-        }
-        body > div:nth-child(2) > div:nth-child(2){
-            overflow-x: hidden;
-        }
-        body > div:nth-child(2) > div:nth-child(2) h3{            
-            margin: 10px 5px;
-            text-align: center;
-
-        }
-        body > div:nth-child(2) > div:nth-child(2) i{
-            font-size: 50px;
-            margin-bottom:20px;
-            text-align: center;
-            width:100%;            
         }
     </style>
     <body>
@@ -127,22 +129,20 @@
                 </select>
                 <div id="q" class="select"></div>            
             </div>
-            <button id="btn">> EXECUTE</button>
+            <button><i class="fa fa-terminal" aria-hidden="true"></i> EXECUTE</button>
         </div>        
         <div>
             <div id="spinner">           
                 <i class="fa fa-database fa-2x fa-fw" aria-hidden="true"></i>
                 <h3>EJECUTA UNA CONSULTA</h3>
-            </div>
-            <div id="data"></div>            
+            </div>          
         </div>
         <!-- SCRIPTS -->
         <script type="text/javascript">
             window.onload = function () {
                 // variables
                 var request = new XMLHttpRequest();
-                var btn = document.getElementById('btn');
-                var data = document.getElementById('data');
+                var spn = document.getElementById('spinner');
                 var q = document.getElementById('q');
                 var columns = ['ip_start', 'ip_end', 'country', 'stateprov', 'district',
                     'city', 'zipcode', 'latitude', 'longitude', 'geoname_id', 'timezone_offset',
@@ -157,16 +157,13 @@
                 // al pulsar el boton se creara el metodo y la ruta del request con
                 //    la funcion getRequest(), se abrira el request, se mostrara la
                 //    pantalla de cargando y se enviara la request
-                btn.onclick = function () {
-                    data.innerHTML = '';
-                    document.getElementById('spinner').innerHTML = '<i class="fa fa-cog fa-spin fa-3x fa-fw"></i>'
+                document.querySelector('button').onclick = function () {
+                    spn.style.background = 'cornflowerblue';
+                    spn.style.alignItems = 'center';
+                    spn.innerHTML = '<i class="fa fa-cog fa-spin fa-3x fa-fw"></i>'
                             + '<h3>CARGANDO DATOS ... </h3>';
-                    document.getElementById('spinner').style.display = 'flex';
-                    data.style.alignSelf = 'center';
-                    data.style.overflowX = 'hidden';
-                    data.style.width = '0';
                     var req = getRequest();
-                    console.log('REQUEST = [' + req[0] + ']' + req[1]);
+                    console.log('REQUEST => ' + req);
                     request.open(req[0], req[1]);
                     request.send();
                 };
@@ -175,8 +172,8 @@
                 request.onreadystatechange = function () {
                     if (request.readyState === 4) {
                         if (request.status === 200) {
-                            console.log(request.responseText);
                             var ipGeo = JSON.parse(request.responseText);
+                            console.log(ipGeo);
                             var datos = '';
                             switch (queryType) {
                                 case 'SELECT':
@@ -194,35 +191,33 @@
                                             datos += '</tr>';
                                         }
                                         datos += '</table>';
-                                        datos += '<h6 style="margin: 5px;border: 1px solid;padding: 5px;">NUMERO DE REGISTROS: ' + ipGeo.length + '</h6>';
-                                        data.style.overflowX = 'scroll';
-                                        data.style.alignSelf = 'flex-start';
+                                        datos += '<h6>NUMERO DE REGISTROS: ' + ipGeo.length + '</h6>';
+                                        spn.style.background = 'white';
+                                        spn.style.alignItems = 'flex-start';
                                     } else {
                                         datos = '<h3 style="color:red;">NO SE HA ENCONTRADO NINGUN REGISTRO</h3>'
                                                 + '<i style="color:red;" class="fa fa-exclamation-triangle" aria-hidden="true"></i>';
                                     }
                                     break;
                                 case 'INSERT':
-                                    datos = '<h3 style="color:green;">EL REGISTRO SE HA INTRODUCIDO CORRECTAMENTE</h3>'
-                                            + '<i style="color:green;" class="fa fa-plus-square-o" aria-hidden="true"></i>';
+                                    datos = '<i class="fa fa-plus-square-o fa-3x" aria-hidden="true"></i>'
+                                            + '<h3>EL REGISTRO SE HA INTRODUCIDO CORRECTAMENTE</h3>';
                                     break;
                                 case 'DELETE':
-                                    datos = '<h3 style="color:green">EL REGISTRO SE HA ELIMINADO CORRECTAMENTE</h3>'
-                                            + '<i style="color:green;" class="fa fa-trash-o" aria-hidden="true"></i>';
+                                    datos = '<i class="fa fa-trash-o fa-3x" aria-hidden="true"></i>'
+                                            + '<h3>EL REGISTRO SE HA ELIMINADO CORRECTAMENTE</h3>';
                                     break;
                                 case 'UPDATE':
-                                    datos = '<h3 style="color:green;">EL REGISTRO SE HA ACTUALIZADO CORRECTAMENTE</h3>'
-                                            + '<i style="color:green;" class="fa fa-pencil-square-o" aria-hidden="true"></i>';
+                                    datos = '<i class="fa fa-pencil-square-o fa-3x" aria-hidden="true"></i>'
+                                            + '<h3>EL REGISTRO SE HA ACTUALIZADO CORRECTAMENTE</h3>';
                                     break;
                             }
-                            data.innerHTML = datos;
                         } else {
-                            data.innerHTML = '<h3 style="color:red;">HA OCURRIDO UN ERROR DURANTE LA PETICION</h3>'
+                            datos = '<h3>HA OCURRIDO UN ERROR DURANTE LA PETICION</h3>'
                                     + '<h4 style="text-align:center;">' + request.status + ' ' + request.statusText + '</h4>'
-                                    + '<i style="color:red;" class="fa fa-window-close-o" aria-hidden="true"></i>';
+                                    + '<i class="fa fa-window-close-o fa-3x" aria-hidden="true"></i>';
                         }
-                        data.style.width = '100%';
-                        document.getElementById('spinner').style.display = 'none';
+                        spn.innerHTML = datos;
                     }
                 };
                 // funcion para cargar el formato correspondiente a la opcion de la query que se quiera realizar
@@ -307,60 +302,60 @@
                     var query = '';
                     queryType = document.querySelector('select').value;
                     switch (queryType) {
-                        case 'SELECT':
+                    case 'SELECT':
                             method = 'GET';
                             path = 'ips/';
                             query += document.querySelectorAll('select')[0].value + ' * '
-                                    + document.getElementsByTagName('label')[0].innerText + ' '
-                                    + document.querySelectorAll('input[type=text]')[0].value + ' ';
+                            + document.getElementsByTagName('label')[0].innerText + ' '
+                            + document.querySelectorAll('input[type=text]')[0].value + ' ';
                             if (document.querySelectorAll('input[type=text]')[1].value !== '') {
                                 query += document.getElementsByTagName('label')[1].innerText + ' '
                                         + document.querySelectorAll('input[type=text]')[1].value + ' ';
                             }
                             query += document.getElementsByTagName('label')[2].innerText + ' '
-                                    + document.querySelectorAll('select')[1].value + ' '
-                                    + document.getElementsByTagName('label')[3].innerText + ' '
-                                    + document.querySelector('input[type=number]').value;
+                            + document.querySelectorAll('select')[1].value + ' '
+                            + document.getElementsByTagName('label')[3].innerText + ' '
+                    + document.querySelector('input[type=number]').value;
                             break;
-                        case 'INSERT':
+                            case 'INSERT':
                             method = 'POST';
-                            path = 'ips/';
-                            query += document.querySelector('select').value + ' '
-                                    + document.getElementsByTagName('label')[0].innerText + ' '
-                                    + document.querySelectorAll('input[type=text]')[0].value + '(';
-                            var chk = document.querySelectorAll('input:checked');
-                            var chks = '';
-                            for (var i = 0; i < chk.length; i++) {
-                                chks += chk[i].value + ',';
-                            }
-                            query += chks.slice(0, -1) + ') ' + document.getElementsByTagName('label')[1].innerText
-                                    + '(' + document.querySelectorAll('input[type=text]')[1].value + ')';
-                            break;
-                        case 'UPDATE':
-                            method = 'PUT';
-                            path = 'ips/';
-                            query += document.querySelectorAll('select')[0].value + ' '
-                                    + document.querySelectorAll('input[type=text]')[0].value + ' '
-                                    + document.getElementsByTagName('label')[0].innerText + ' '
-                                    + document.querySelectorAll('select')[1].value + ' '
-                                    + document.getElementsByTagName('label')[1].innerText + ' '
-                                    + document.querySelectorAll('input[type=text]')[1].value + ' '
-                                    + document.getElementsByTagName('label')[2].innerText + ' '
-                                    + document.querySelectorAll('input[type=text]')[2].value;
-                            break;
-                        case 'DELETE':
-                            method = 'DELETE';
-                            path = 'ips/';
-                            query += document.querySelector('select').value + ' '
-                                    + document.getElementsByTagName('label')[0].innerText + ' '
-                                    + document.querySelectorAll('input[type=text]')[0].value + ' '
-                                    + document.getElementsByTagName('label')[1].innerText + ' '
-                                    + document.querySelectorAll('input[type=text]')[1].value;
-                            break;
+                    path = 'ips/';
+                    query += document.querySelector('select').value + ' '
+                            + document.getElementsByTagName('label')[0].innerText + ' '
+                            + document.querySelectorAll('input[type=text]')[0].value + '(';
+                    var chk = document.querySelectorAll('input:checked');
+                    var chks = '';
+                    for (var i = 0; i < chk.length; i++) {
+                        chks += chk[i].value + ',';
                     }
-                    var url = 'http://localhost:8080/' + path + query;
-                    var req = [method, url];
-                    return req;
+                    query += chks.slice(0, -1) + ') ' + document.getElementsByTagName('label')[1].innerText
+                    + '(' + document.querySelectorAll('input[type=text]')[1].value + ')';
+                            break;
+                            case 'UPDATE':
+                            method = 'PUT';
+                    path = 'ips/';
+                    query += document.querySelectorAll('select')[0].value + ' '
+                            + document.querySelectorAll('input[type=text]')[0].value + ' '
+                            + document.getElementsByTagName('label')[0].innerText + ' '
+                            + document.querySelectorAll('select')[1].value + ' '
+                            + document.getElementsByTagName('label')[1].innerText + ' '
+                            + document.querySelectorAll('input[type=text]')[1].value + ' '
+                            + document.getElementsByTagName('label')[2].innerText + ' '
+                    + document.querySelectorAll('input[type=text]')[2].value;
+                            break;
+                            case 'DELETE':
+                            method = 'DELETE';
+                    path = 'ips/';
+                    query += document.querySelector('select').value + ' '
+                            + document.getElementsByTagName('label')[0].innerText + ' '
+                            + document.querySelectorAll('input[type=text]')[0].value + ' '
+                            + document.getElementsByTagName('label')[1].innerText + ' '
+                    + document.querySelectorAll('input[type=text]')[1].value;
+                            break;
+                }
+                var url = 'http://localhost:8080/' + path + query;
+                var req = [method, url];
+                return req;
                 }
             };
         </script>
