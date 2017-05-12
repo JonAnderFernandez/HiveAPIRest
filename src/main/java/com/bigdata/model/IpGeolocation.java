@@ -3,7 +3,7 @@
  * To change this templatitudee file, choose Tools | Templatitudees
  * and open the templatitudee in the editor.
  */
-package com.bilbomatica.model;
+package com.bigdata.model;
 
 /**
  *

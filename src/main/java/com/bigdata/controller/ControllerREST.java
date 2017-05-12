@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.bilbomatica.controller;
+package com.bigdata.controller;
 
 /**
  *
  * @author jafernandez
  */
-import com.bilbomatica.dao.IpGeolocationDAO;
-import com.bilbomatica.model.IpGeolocation;
+import com.bigdata.dao.IpGeolocationDAO;
+import com.bigdata.model.IpGeolocation;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +28,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class ControllerREST {
     @Autowired
     private IpGeolocationDAO ipGeoDAO;
-         
-    @GetMapping("/tables/{query:.+}")
-    public ArrayList<String> getTables(@PathVariable("query") String query) throws SQLException{
-        return ipGeoDAO.getTables(query);
-    }
     
     @GetMapping("/ips/{query:.+}")
     public ArrayList<IpGeolocation> getIps(@PathVariable("query") String query) throws SQLException{

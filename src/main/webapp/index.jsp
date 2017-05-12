@@ -1,123 +1,124 @@
 <!DOCTYPE html>
 <html>
-    <!-- FAVICON -->
-    <link rel="icon" href="https://cdn4.iconfinder.com/data/icons/single-width-stroke/24/oui-icons-40-128.png" type="image/x-icon" />
-    <title>Hive Queries</title>
-    <!-- VIEWPORT -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- GOOGLE FONTS -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-    <!-- FONT AWESOME -->
-    <link rel="stylesheet" 
-          href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" 
-          integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" 
-          crossorigin="anonymous" />
-    <!-- STYLES -->
-    <style type="text/css">
-        html, body{
-            background: #EEE;            
-            font-family: 'Open Sans', sans-serif;
-        }
-        button{
-            background: transparent;
-            border: 2px solid cornflowerblue;
-            border-radius: 3px;
-            color: cornflowerblue;
-            cursor: pointer;
-            width: 100px;
-        }
-        button, input, select{            
-            font-family: 'Open Sans', sans-serif;
-        }
-        button:hover{
-            font-weight: bolder;
-        }        
-        label{
-            margin: 0 5px;
-        }
-        table{
-            width: 100%;
-        }
-        td{
-            color: #222;
-        }
-        td,th{
-            font-size: 10px;
-            padding: 3px;
-        }
-        tr:hover{
-            cursor: pointer;            
-        }
-        body > div:nth-child(1){ 
-            display: flex;
-            flex-wrap: wrap;
-            margin-bottom: 10px;
-        }  
-        body > div:nth-child(1) > div{    
-            display: flex;
-            width: 100%;
-        }
-        body > div:nth-child(1) > div, button{
-            margin: 10px;
-        } 
-        body > div:nth-child(1) > div > div{ 
-            align-items: flex-start;
-            display: flex;
-            font-size: 10px;
-        }
-        body > div:nth-child(1) > div div input:disabled{ 
-            text-align: center;
-            width: 120px;
-        }
-        body > div:nth-child(1) > div .select div:first-child, body > div:nth-child(1) > div .insert div:nth-child(2){ 
-            border: 1px solid lightgray;
-            display: flex;
-            flex-direction: column;
-            padding: 0 10px 5px 0;
-        }
-        body > div:nth-child(1) > div select{ 
-            background: white;
-            height: 21px;
-        }
-        body > div:nth-child(1) > div select:first-child, body > div:nth-child(1) > div .insert div:first-child input{ 
-            margin-right: 5px;
-        }
-        body > div:nth-child(1) > div .insert div:first-child label, body > div:nth-child(1) > div .delete div label:first-child{ 
-            margin-left: 0;
-        }
-        body > div:nth-child(1) > div .update select{ 
-            margin-right: 0;
-        }
-        body > div:nth-child(2) > div{
-            align-items: center;      
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            min-height: 300px;
-            overflow-x: auto;
-        }
-        body > div:nth-child(2) > div i{            
-            margin-right: 10px;
-        }
-        body > div:nth-child(2) > div h6{    
-            align-self: flex-end;
-            border: 1px solid #222;
-            color: #222;
-            margin: 2px;
-            padding: 5px;
-            width: 98%;
-        }
-        body > div:nth-child(1), body > div:nth-child(2) > div{   
-            border: 1px solid gray;
-            background: white;
-        }
-        body > div:nth-child(2) > div, button:hover, th, tr:hover{
-            background: cornflowerblue;
-        }
-        body > div:nth-child(2) > div, button:hover, th, tr:hover td{            
-            color: white;
-        }
-    </style>
+    <head>
+        <!-- FAVICON -->
+        <link rel="icon" href="https://cdn4.iconfinder.com/data/icons/single-width-stroke/24/oui-icons-40-128.png" type="image/x-icon" />
+        <title>Hive Queries</title>
+        <!-- VIEWPORT -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- GOOGLE FONTS -->
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <!-- FONT AWESOME -->
+        <link href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" rel="stylesheet"
+              integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" 
+              crossorigin="anonymous" />
+        <!-- STYLES -->
+        <style type="text/css">
+            html, body{
+                background: #EEE;            
+                font-family: 'Open Sans', sans-serif;
+            }
+            button{
+                background: transparent;
+                border: 2px solid cornflowerblue;
+                border-radius: 3px;
+                color: cornflowerblue;
+                cursor: pointer;
+                width: 100px;
+            }
+            button, input, select{            
+                font-family: 'Open Sans', sans-serif;
+            }
+            button:hover{
+                font-weight: bolder;
+            }        
+            label{
+                margin: 0 5px;
+            }
+            table{
+                width: 100%;
+            }
+            td{
+                color: #222;
+            }
+            td,th{
+                font-size: 10px;
+                padding: 3px;
+            }
+            tr:hover{
+                cursor: pointer;            
+            }
+            body > div:nth-child(1){ 
+                display: flex;
+                flex-wrap: wrap;
+                margin-bottom: 10px;
+            }  
+            body > div:nth-child(1) > div{    
+                display: flex;
+                width: 100%;
+            }
+            body > div:nth-child(1) > div, button{
+                margin: 10px;
+            } 
+            body > div:nth-child(1) > div > div{ 
+                align-items: flex-start;
+                display: flex;
+                font-size: 10px;
+            }
+            body > div:nth-child(1) > div div input:disabled{ 
+                text-align: center;
+                width: 120px;
+            }
+            body > div:nth-child(1) > div .select div:first-child, body > div:nth-child(1) > div .insert div:nth-child(2){ 
+                border: 1px solid lightgray;
+                display: flex;
+                flex-direction: column;
+                padding: 0 10px 5px 0;
+            }
+            body > div:nth-child(1) > div select{ 
+                background: white;
+                height: 21px;
+            }
+            body > div:nth-child(1) > div select:first-child, body > div:nth-child(1) > div .insert div:first-child input{ 
+                margin-right: 5px;
+            }
+            body > div:nth-child(1) > div .insert div:first-child label, body > div:nth-child(1) > div .delete div label:first-child{ 
+                margin-left: 0;
+            }
+            body > div:nth-child(1) > div .update select{ 
+                margin-right: 0;
+            }
+            body > div:nth-child(2) > div{
+                align-items: center;      
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                min-height: 300px;
+                overflow-x: auto;
+            }
+            body > div:nth-child(2) > div i{            
+                margin-right: 10px;
+            }
+            body > div:nth-child(2) > div h6{    
+                align-self: flex-end;
+                border: 1px solid #222;
+                color: #222;
+                margin: 2px;
+                padding: 5px;
+                width: 98%;
+            }
+            body > div:nth-child(1), body > div:nth-child(2) > div{   
+                border: 1px solid gray;
+                background: white;
+            }
+            body > div:nth-child(2) > div, button:hover, th, tr:hover{
+                background: cornflowerblue;
+            }
+            body > div:nth-child(2) > div, button:hover, th, tr:hover td{            
+                color: white;
+            }
+        </style>        
+    </head>
     <body>
         <div>   
             <div>
@@ -144,6 +145,7 @@
                 var request = new XMLHttpRequest();
                 var spn = document.getElementById('spinner');
                 var q = document.getElementById('q');
+                var table = 'ip_geolocation_orc';
                 var columns = ['ip_start', 'ip_end', 'country', 'stateprov', 'district',
                     'city', 'zipcode', 'latitude', 'longitude', 'geoname_id', 'timezone_offset',
                     'timezone_type', 'isp_name', 'connection_type', 'organization_name'];
@@ -232,7 +234,7 @@
                             s += '</div>'
                                     + '<div>'
                                     + '<label>FROM</label>'
-                                    + '<input type="text" value="ip_geolocation_orc" disabled>'
+                                    + '<input type="text" value="' + table + '" disabled>'
                                     + '<label>WHERE</label>'
                                     + '<input type="text">'
                                     + '<label>ORDER BY</label>'
@@ -249,7 +251,7 @@
                         case 'INSERT':
                             s += '<div>'
                                     + '<label>INTO</label>'
-                                    + '<input type="text" value="ip_geolocation_orc" disabled>'
+                                    + '<input type="text" value="' + table + '" disabled>'
                                     + '</div>'
                                     + '<div>';
                             for (var i = 0; i < columns.length; i++) {
@@ -264,7 +266,7 @@
                             break;
                         case 'UPDATE':
                             s += '<div>'
-                                    + '<input type="text" value="ip_geolocation_orc" disabled>'
+                                    + '<input type="text" value="' + table + '" disabled>'
                                     + '<label>SET</label>'
                                     + '</div>'
                                     + '<div>'
@@ -285,7 +287,7 @@
                         case 'DELETE':
                             s += '<div>'
                                     + '<label>FROM</label>'
-                                    + '<input type="text" value="ip_geolocation_orc" disabled>'
+                                    + '<input type="text" value="' + table + '" disabled>'
                                     + '<label>WHERE</label>'
                                     + '<input type="text">'
                                     + '</div>';
@@ -302,60 +304,60 @@
                     var query = '';
                     queryType = document.querySelector('select').value;
                     switch (queryType) {
-                    case 'SELECT':
+                        case 'SELECT':
                             method = 'GET';
                             path = 'ips/';
                             query += document.querySelectorAll('select')[0].value + ' * '
-                            + document.getElementsByTagName('label')[0].innerText + ' '
-                            + document.querySelectorAll('input[type=text]')[0].value + ' ';
+                                    + document.getElementsByTagName('label')[0].innerText + ' '
+                                    + document.querySelectorAll('input[type=text]')[0].value + ' ';
                             if (document.querySelectorAll('input[type=text]')[1].value !== '') {
                                 query += document.getElementsByTagName('label')[1].innerText + ' '
                                         + document.querySelectorAll('input[type=text]')[1].value + ' ';
                             }
                             query += document.getElementsByTagName('label')[2].innerText + ' '
-                            + document.querySelectorAll('select')[1].value + ' '
-                            + document.getElementsByTagName('label')[3].innerText + ' '
-                    + document.querySelector('input[type=number]').value;
+                                    + document.querySelectorAll('select')[1].value + ' '
+                                    + document.getElementsByTagName('label')[3].innerText + ' '
+                                    + document.querySelector('input[type=number]').value;
                             break;
-                            case 'INSERT':
+                        case 'INSERT':
                             method = 'POST';
-                    path = 'ips/';
-                    query += document.querySelector('select').value + ' '
-                            + document.getElementsByTagName('label')[0].innerText + ' '
-                            + document.querySelectorAll('input[type=text]')[0].value + '(';
-                    var chk = document.querySelectorAll('input:checked');
-                    var chks = '';
-                    for (var i = 0; i < chk.length; i++) {
-                        chks += chk[i].value + ',';
-                    }
-                    query += chks.slice(0, -1) + ') ' + document.getElementsByTagName('label')[1].innerText
-                    + '(' + document.querySelectorAll('input[type=text]')[1].value + ')';
+                            path = 'ips/';
+                            query += document.querySelector('select').value + ' '
+                                    + document.getElementsByTagName('label')[0].innerText + ' '
+                                    + document.querySelectorAll('input[type=text]')[0].value + '(';
+                            var chk = document.querySelectorAll('input:checked');
+                            var chks = '';
+                            for (var i = 0; i < chk.length; i++) {
+                                chks += chk[i].value + ',';
+                            }
+                            query += chks.slice(0, -1) + ') ' + document.getElementsByTagName('label')[1].innerText
+                                    + '(' + document.querySelectorAll('input[type=text]')[1].value + ')';
                             break;
-                            case 'UPDATE':
+                        case 'UPDATE':
                             method = 'PUT';
-                    path = 'ips/';
-                    query += document.querySelectorAll('select')[0].value + ' '
-                            + document.querySelectorAll('input[type=text]')[0].value + ' '
-                            + document.getElementsByTagName('label')[0].innerText + ' '
-                            + document.querySelectorAll('select')[1].value + ' '
-                            + document.getElementsByTagName('label')[1].innerText + ' '
-                            + document.querySelectorAll('input[type=text]')[1].value + ' '
-                            + document.getElementsByTagName('label')[2].innerText + ' '
-                    + document.querySelectorAll('input[type=text]')[2].value;
+                            path = 'ips/';
+                            query += document.querySelectorAll('select')[0].value + ' '
+                                    + document.querySelectorAll('input[type=text]')[0].value + ' '
+                                    + document.getElementsByTagName('label')[0].innerText + ' '
+                                    + document.querySelectorAll('select')[1].value + ' '
+                                    + document.getElementsByTagName('label')[1].innerText + ' '
+                                    + document.querySelectorAll('input[type=text]')[1].value + ' '
+                                    + document.getElementsByTagName('label')[2].innerText + ' '
+                                    + document.querySelectorAll('input[type=text]')[2].value;
                             break;
-                            case 'DELETE':
+                        case 'DELETE':
                             method = 'DELETE';
-                    path = 'ips/';
-                    query += document.querySelector('select').value + ' '
-                            + document.getElementsByTagName('label')[0].innerText + ' '
-                            + document.querySelectorAll('input[type=text]')[0].value + ' '
-                            + document.getElementsByTagName('label')[1].innerText + ' '
-                    + document.querySelectorAll('input[type=text]')[1].value;
+                            path = 'ips/';
+                            query += document.querySelector('select').value + ' '
+                                    + document.getElementsByTagName('label')[0].innerText + ' '
+                                    + document.querySelectorAll('input[type=text]')[0].value + ' '
+                                    + document.getElementsByTagName('label')[1].innerText + ' '
+                                    + document.querySelectorAll('input[type=text]')[1].value;
                             break;
-                }
-                var url = 'http://localhost:8080/' + path + query;
-                var req = [method, url];
-                return req;
+                    }
+                    var url = 'http://localhost:8080/' + path + query;
+                    var req = [method, url];
+                    return req;
                 }
             };
         </script>

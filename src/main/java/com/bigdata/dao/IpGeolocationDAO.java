@@ -3,11 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.bilbomatica.dao;
+package com.bigdata.dao;
 
-import com.bilbomatica.model.IpGeolocation;
+/**
+ *
+ * @author jafernandez
+ */
+import com.bigdata.model.IpGeolocation;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,10 +20,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.stereotype.Component;
 
-/**
- *
- * @author jafernandez
- */
 @Component
 public class IpGeolocationDAO {
 
@@ -67,26 +66,5 @@ public class IpGeolocationDAO {
             Logger.getLogger(IpGeolocationDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return i;
-    }
-
-    public ArrayList<String> getTables(String q) {
-        ArrayList<String> tables = new ArrayList<String>();
-        ResultSet rst;
-        try {
-            Class.forName(JDBC_DRIVER_NAME);
-            Connection cnn = DriverManager.getConnection(hiveURL, "hive", "");
-            DatabaseMetaData m = cnn.getMetaData();
-            String s = m.toString();           
-            rst = m.getTables(cnn.getCatalog(), null, "TAB_%", null);
-            for (int i = 0; i < rst.getMetaData().getColumnCount(); i++) {
-                tables.add(rst.getMetaData().getTableName(i + 1));
-            }
-            cnn.close();
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(IpGeolocationDAO.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(IpGeolocationDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return tables;
     }
 }
